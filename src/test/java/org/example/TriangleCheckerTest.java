@@ -1,56 +1,26 @@
 package org.example;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class TriangleCheckerTest {
-    private TriangleChecker triangleChecker;
 
-    @BeforeEach
-    void setUp() {
-        triangleChecker = new TriangleChecker();
-    }
-
-    @Test
-    void testNotATriangleZeroSides() {
-        String result = triangleChecker.determineTriangleType(0, 0, 0);
-        Assertions.assertEquals("Not a triangle", result);
-        System.out.println("Test 1 - PASS");
-    }
-
-    @Test
-    void testEquilateralTriangles() {
-        String result = triangleChecker.determineTriangleType(1, 1, 1);
-        Assertions.assertEquals("Equilateral", result);
-        System.out.println("Test 2 - PASS");
-    }
-
-    @Test
-    void testIsoscelesTriangle() {
-        String result = triangleChecker.determineTriangleType(2, 2, 3);
-        Assertions.assertEquals("Isosceles", result);
-        System.out.println("Test 3 - PASS");
-    }
-
-    @Test
-    void testScaleneTriangle() {
-        String result = triangleChecker.determineTriangleType(3, 4, 5);
-        Assertions.assertEquals("Scalene", result);
-        System.out.println("Test 4 - PASS");
-    }
-
-    @Test
-    void testNotATriangleSumOfSides() {
-        String result = triangleChecker.determineTriangleType(1, 2, 3);
-        Assertions.assertEquals("Not a triangle", result);
-        System.out.println("Test 5 - PASS");
-    }
-
-    @Test
-    void testNotATriangleEqualSums() {
-        String result = triangleChecker.determineTriangleType(5, 5, 10);
-        Assertions.assertEquals("Not a triangle", result);
-        System.out.println("Test 6 - PASS");
+    @ParameterizedTest
+    @CsvSource({
+            "0, 0, 0, Not a triangle",   // Все стороны равны нулю
+            "1, 1, 1, Equilateral",      // Все стороны равны
+            "2, 2, 3, Isosceles",        // Две стороны равны
+            "3, 4, 5, Scalene",          // Все стороны разные
+            "1, 2, 3, Not a triangle",   // Не выполняется неравенство треугольника
+            "5, 5, 10, Not a triangle",  // Не выполняется неравенство треугольника
+            "-1, 2, 3, Not a triangle",  // Отрицательная длина стороны
+            "1, 1, -1, Not a triangle",  // Отрицательная длина стороны
+            "1000000, 1000000, 1000000, Equilateral", // Большой равносторонний
+            "1000000, 1000000, 999999, Isosceles" // Большой равнобедренный
+    })
+    void testTriangleChecker(int a, int b, int c, String expectedResult) {
+        String actualResult = TriangleChecker.determineTriangleType(a, b, c);
+        Assertions.assertEquals(expectedResult, actualResult);
     }
 }
